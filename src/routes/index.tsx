@@ -8,28 +8,31 @@ import {
 } from '@builder.io/qwik';
 import type {DocumentHead} from '@builder.io/qwik-city';
 import {isServer} from "@builder.io/qwik/build";
+import {Link} from "@builder.io/qwik-city";
 
 export default component$(() => {
 
 
     const indexResource = useResource$(async () => {
         if (isServer) {
-            return 'serverResource'
+            const {prisma} = await import('../server/prisma')
+            return prisma.post.findMany()
         }
         const {trpc} = await import('../client/trpc')
         return trpc.product.list.query('')
-    })
-
-    useClientEffect$(async ()=>{
-        const {trpc} = await import('../client/trpc')
-        const resp = await trpc.product.list.query('')
-        console.log(resp)
     })
     return (
         <Resource
             value={indexResource}
             onPending={() => <div>loading</div>}
-            onResolved={(data)=><div>{data}</div>}
+            onResolved={(data)=>(<>{data.map(value=>{
+                return (
+                    <div>
+                        <h3>{value.title}</h3>
+                        <Link href={`/${value.postLink}`}>goToPost</Link>
+                    </div>
+                )
+            })}</>)}
         />
     );
 });
