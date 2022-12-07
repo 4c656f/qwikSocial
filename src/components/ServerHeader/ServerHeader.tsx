@@ -8,6 +8,7 @@ import Button from "../ui/Button/Button";
 import ArrowIcon from "../ui/icons/Arrow";
 import Header from "../ui/header/header";
 import {globalContext} from "../../routes/layout";
+import CustomLink from "../ui/CustomLink/CustomLink";
 
 type ServerHeaderProps = {}
 
@@ -23,11 +24,13 @@ export default component$((props: ServerHeaderProps) => {
                 <li
                     q:slot={'logoSection'}
                 >
-                    <Link
+                    <CustomLink
+                        size={'small'}
+                        type={'text'}
                         href={'/'}
                     >
                         <h4>Logo</h4>
-                    </Link>
+                    </CustomLink>
                 </li>
                 <HeaderItem
                     q:slot={'mainSection'}
@@ -54,15 +57,15 @@ export default component$((props: ServerHeaderProps) => {
                         toggleTheme
                     </span>
                 </Button>
-                <Link
+                <CustomLink
                     href={'/create-post'}
                     // type={'contained'}
                     q:slot={'rightSection'}
                 >
                     <span>
-                        toggleTheme
+                        createPost
                     </span>
-                </Link>
+                </CustomLink>
             </Header>
         </>
     );

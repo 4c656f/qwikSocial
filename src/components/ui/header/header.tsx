@@ -17,19 +17,19 @@ export default component$(() => {
             >
 
                 <ul
-                    class={'section'}
+                    class={'sections'}
                 >
                     <Slot name={'logoSection'}/>
                 </ul>
 
                 <ul
-                    class={'section'}
+                    class={'sections'}
                 >
                     <Slot name={'mainSection'}/>
                 </ul>
 
                 <ul
-                    class={'section'}
+                    class={'sections'}
                 >
                     <Slot name={'rightSection'}/>
                 </ul>

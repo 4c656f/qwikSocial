@@ -1,4 +1,4 @@
-@import "variables";
+@import "_variables";
 
 * {
   -webkit-box-sizing: border-box;
@@ -196,4 +196,16 @@ main {
   flex-direction: column;
 
 }
-
+ul{
+  list-style-type: none;
+  text-decoration: none;
+  @include default_h4();
+}
+li{
+  text-decoration: none;
+  @include default_h4();
+}
+nav{
+  text-decoration: none;
+  @include default_h4();
+}

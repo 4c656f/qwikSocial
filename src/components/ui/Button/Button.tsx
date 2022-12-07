@@ -1,45 +1,35 @@
-import {component$, HTMLAttributes, Slot, useStylesScoped$, QwikJSX, QwikIntrinsicElements} from '@builder.io/qwik';
-
+import {component$, Slot, useStylesScoped$, QwikJSX, QwikIntrinsicElements} from '@builder.io/qwik';
 import styles from './button.scss?inline';
 import {ButtonType} from "../../../types/IElementType";
 import {IElementsSize} from "../../../types/IElementsSize";
 import {IColorIndex} from "../../../types/IColorIndex";
+import {ElementType} from "../../../types/IElemntType";
 
 
-import IntrinsicElements = QwikJSX.IntrinsicElements;
-
-type ElementType<P = any> =
-    {
-        [K in keyof QwikIntrinsicElements]: P extends QwikIntrinsicElements[K] ? K : never
-    }[keyof QwikIntrinsicElements]
 
 
-export const defaultElement = 'a'
+export const defaultElement = 'button'
 
 
-type ButtonCustomProps<E extends ElementType = typeof defaultElement> = {
+type ButtonCustomProps = {
     type?: ButtonType;
     size?: IElementsSize;
     colorIndex?: IColorIndex;
     className?: string;
-    as?: E;
 }
 
-type ButtonProps<E extends ElementType> = ButtonCustomProps<E> & QwikIntrinsicElements[E]
+type ButtonProps<E extends ElementType> = ButtonCustomProps & Omit<QwikIntrinsicElements[typeof defaultElement], keyof ButtonCustomProps>
 
 
-const component =  component$(<E extends ElementType = ElementType>(props:ButtonProps<E>) => {
+const component =  component$((props:ButtonProps<'button'>) => {
 
     const {
         className,
         type = 'contained',
         size = 'medium',
         colorIndex = '0',
-        as,
         ...rest
     } = props
-
-    const Element = defaultElement || as;
 
     useStylesScoped$(styles);
 
@@ -52,7 +42,7 @@ const component =  component$(<E extends ElementType = ElementType>(props:Button
     ]
 
     return (
-        <Element
+        <button
             // onClick$={async () => {
             //     if (onClick$) await onClick$();
             // }}
@@ -67,7 +57,7 @@ const component =  component$(<E extends ElementType = ElementType>(props:Button
                     name={'icon'}
                 />
             </div>
-        </Element>
+        </button>
     )
 })
 
