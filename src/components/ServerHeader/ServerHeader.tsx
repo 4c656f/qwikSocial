@@ -1,6 +1,6 @@
 import {component$, Resource, useContext, useResource$} from '@builder.io/qwik';
 import {isServer} from "@builder.io/qwik/build";
-import {Link} from "@builder.io/qwik-city";
+import {Link, RequestHandler} from "@builder.io/qwik-city";
 import HeaderItem from "../ui/HeaderItem/HeaderItem";
 import HeaderSection from "../ui/HeaderSection/HeaderSection";
 import HeaderSectionElement from "../ui/HeaderSectionElement/HeaderSectionElement";
@@ -10,13 +10,32 @@ import Header from "../ui/header/header";
 import {globalContext} from "../../routes/layout";
 import CustomLink from "../ui/CustomLink/CustomLink";
 
-type ServerHeaderProps = {}
+type ServerHeaderProps = {
+    isAuth: boolean
+}
+
+
+
+
 
 export default component$((props: ServerHeaderProps) => {
 
-    const {} = props
+    const {
+        isAuth
+    } = props
 
     const globalStore = useContext(globalContext)
+
+
+    const headerResource = useResource$(({previous})=>{
+        if(isServer){
+
+            console.log('serverHeader', previous)
+        }else{
+            console.log('userRequestHEader')
+        }
+
+    })
 
     return (
         <>
@@ -57,15 +76,19 @@ export default component$((props: ServerHeaderProps) => {
                         toggleTheme
                     </span>
                 </Button>
-                <CustomLink
-                    href={'/create-post'}
-                    // type={'contained'}
-                    q:slot={'rightSection'}
-                >
+                {isAuth?
+                    <CustomLink
+                        href={'/create-post'}
+                        // type={'contained'}
+                        q:slot={'rightSection'}
+                    >
                     <span>
                         createPost
                     </span>
-                </CustomLink>
+                    </CustomLink>:null
+
+                }
+
             </Header>
         </>
     );

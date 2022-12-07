@@ -1,6 +1,7 @@
 import {
     component$,
     createContext,
+    Resource,
     Slot,
     useClientEffect$,
     useContext,
@@ -8,6 +9,7 @@ import {
     useStore
 } from '@builder.io/qwik';
 import ServerHeader from "../components/ServerHeader/ServerHeader";
+import {RequestHandler, useEndpoint} from "@builder.io/qwik-city";
 
 
 type globalStore = {
@@ -15,6 +17,25 @@ type globalStore = {
 }
 
 export const globalContext = createContext<globalStore>('globalContext')
+
+
+type onGetReturn = {
+    isAuth: boolean
+}
+
+
+export const onGet:RequestHandler<onGetReturn> = async ({response, request,cookie}) => {
+    if(request.url[request.url.length-1]!=='/')return
+
+
+    const cookies = cookie.get('acesToken')
+    if(!cookies){
+        return {isAuth: false}
+    }
+    if(cookies.value='10'){
+        return {isAuth: true}
+    }
+}
 
 export default component$(() => {
 
@@ -30,7 +51,7 @@ export default component$(() => {
         document.body.dataset.theme = globalStore.isDark ? 'dark' : 'light'
     })
 
-
+    const headerReq = useEndpoint<typeof onGet>()
 
 
     useContextProvider(globalContext, globalStore)
@@ -40,8 +61,22 @@ export default component$(() => {
     return (
         <>
             <main>
-                <ServerHeader/>
-                <section>
+                <Resource
+                    value={headerReq}
+                    onPending={()=><span>Loading...</span>}
+                    onResolved={(data)=>(
+                        <ServerHeader
+                            isAuth={data.isAuth}
+                        />
+                    )}
+                />
+
+                <section
+                    style={{
+                        height: '1px',
+                        minHeight: '100%'
+                    }}
+                >
                     <Slot/>
                 </section>
             </main>
