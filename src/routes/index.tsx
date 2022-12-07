@@ -1,22 +1,17 @@
-import {
-    component$,
-    Resource,
-    useClientEffect$,
-    useClientEffectQrl,
-    useClientMount$,
-    useResource$
-} from '@builder.io/qwik';
-import type {DocumentHead} from '@builder.io/qwik-city';
+import {component$, Resource, useResource$} from '@builder.io/qwik';
+import {DocumentHead, Link} from '@builder.io/qwik-city';
 import {isServer} from "@builder.io/qwik/build";
-import {Link} from "@builder.io/qwik-city";
+import Button from "../components/ui/Button/Button";
+
+
 
 export default component$(() => {
 
 
     const indexResource = useResource$(async () => {
         if (isServer) {
-            const {prisma} = await import('../server/prisma')
-            return prisma.post.findMany()
+            const {tServer} = await import('../server/trpc/router/index')
+            return tServer.product.list('')
         }
         const {trpc} = await import('../client/trpc')
         return trpc.product.list.query('')
@@ -24,12 +19,19 @@ export default component$(() => {
     return (
         <Resource
             value={indexResource}
-            onPending={() => <div>loading</div>}
-            onResolved={(data)=>(<>{data.map(value=>{
+            onPending={() => <span>loading</span>}
+            onRejected={()=><div>error</div>}
+            onResolved={(data) => (<>{data.map(value => {
                 return (
                     <div>
-                        <h3>{value.title}</h3>
-                        <Link href={`/${value.postLink}`}>goToPost</Link>
+                        <Link
+                            href={`/${value.link}`}
+                        >
+                            <h3>{value.title}</h3>
+                        </Link>
+                        <span>{value._count.comments}</span>
+                        <span>{value._count.likes}</span>
+                        <span>{value.author.userName}</span>
                     </div>
                 )
             })}</>)}
@@ -38,11 +40,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-    title: 'Welcome to Qwik',
+    title: 'Home page',
     meta: [
         {
             name: 'description',
-            content: 'Qwik site description',
+            content: 'social site description',
         },
     ],
 };

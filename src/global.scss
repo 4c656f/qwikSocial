@@ -120,17 +120,14 @@ body {
   --index_primary_text: #0B6EF9;
 }
 
-@keyframes backgroundPulse {
-  0% {
-    background-color: red;
-  }
-  50% {
-    background-color: green;
-  }
-  100% {
-    background-color: red;
-  }
 
+
+main{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  grid-gap: 10px;
+  @include small_padding();
 }
 
 h1 {

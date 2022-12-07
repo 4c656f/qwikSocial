@@ -1,18 +1,34 @@
 import {PrismaClient} from '@prisma/client'
-
+import {faker} from '@faker-js/faker'
 const prisma = new PrismaClient()
 
 async function main() {
-    const alice = await prisma.user.upsert({
-        where: {userName: '4c656f'},
+
+
+    const userDelete = await prisma.user.deleteMany()
+
+    const user = await prisma.user.upsert({
+        where: {
+            userName: '4c656f'
+        },
         update: {
-            posts: {
-                update:{
-                    where:{
-                        postLink: 'some-title'
+            likes: {
+                updateMany: {
+                    where: {
+
                     },
-                    data:{
-                        postContent: '<h1>somePostContentTitle</h1>'
+                    data: {
+
+                    }
+                }
+            },
+            posts: {
+                updateMany: {
+                    where: {
+
+                    },
+                    data: {
+                        content: `<p>newPostContent</p>`,
                     }
                 }
             }
@@ -20,17 +36,45 @@ async function main() {
         create: {
             userName: '4c656f',
             email: 'contact@4c656f.com',
-            password: 'somePassword',
-            posts:{
+            password: faker.internet.password(10),
+            posts: {
                 create:{
                     title: 'someTitle',
-                    postLink: 'some-title',
-                    postContent: '<h1>somePostContentTitle</h1>'
+                    link: 'some-title',
+                    content: `<p>${faker.lorem.paragraph(10)}</p>`,
+                    comments: {
+                        create: {
+                            author:{
+                                connect: {
+                                    userName: '4c656f'
+                                }
+                            },
+                            content: faker.lorem.sentence(20)
+                        }
+                    },
+                    likes: {
+                        create:{
+                            author: {
+                                connect: {
+                                    userName: '4c656f'
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+
+
         }
     })
-    console.log(alice)
+
+
+
+
+
+
+    console.log(user)
 }
 
 main()

@@ -1,12 +1,12 @@
 import {PrismaClient} from '@prisma/client';
 import {t} from '../trpc';
-import {prductRouter} from './prductRouter';
+import {postRouter} from './postRouter';
 
 export const appRouter = t.router({
-    product: prductRouter,
+    product: postRouter,
 });
 
 
 export type AppRouter = typeof appRouter;
 
-export const tServer = appRouter.createCaller({prisma: new PrismaClient()});
+export const tServer = appRouter.createCaller({req: undefined, res: undefined});
